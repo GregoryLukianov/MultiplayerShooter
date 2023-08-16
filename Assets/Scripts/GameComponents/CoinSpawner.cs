@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
@@ -32,7 +31,7 @@ namespace GameComponents
         {
             while (true)
             {
-                yield return new WaitForSeconds(3);
+                yield return new WaitForSeconds(_coinRespawnTime);
                 
                 PhotonNetwork.InstantiateRoomObject("Bonuses/CoinPrefab", 
                     new Vector2(Random.Range(-7,7),Random.Range(-4,4)), 

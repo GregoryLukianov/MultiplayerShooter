@@ -5,8 +5,8 @@ namespace PlayerComponents
 {
     public abstract class Damageable : MonoBehaviour
     {
-        public virtual event Action OnHit;
-        public virtual event Action OnDeath;
+        public event Action OnHit;
+        public event Action OnDeath;
         public abstract void GetDamage(float damage);
 
         protected void RiseHit()

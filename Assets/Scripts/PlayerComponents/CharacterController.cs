@@ -1,6 +1,4 @@
-﻿using System;
-using Photon.Pun;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace PlayerComponents
 {
@@ -8,12 +6,10 @@ namespace PlayerComponents
     {
         [SerializeField]private Player _player;
         private Animator _animator;
-        private PhotonView _photonView;
         private SpriteRenderer _spriteRenderer;
         private SpriteRenderer _gunSpriteRenderer;
         private void Start()
         {
-            _photonView = GetComponent<PhotonView>();
             _animator = GetComponent<Animator>();
             _spriteRenderer = GetComponent<SpriteRenderer>();
             _gunSpriteRenderer = _player.GetComponentInChildren<Gun>().GetComponent<SpriteRenderer>();

@@ -1,8 +1,6 @@
-﻿using System;
-using Photon.Pun;
-using Photon.Pun.UtilityScripts;
+﻿using Photon.Pun;
 using UnityEngine;
-using Random = UnityEngine.Random;
+
 
 namespace GameComponents
 {

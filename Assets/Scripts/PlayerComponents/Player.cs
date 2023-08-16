@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Linq;
 using GameComponents;
 using Photon.Pun;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.Serialization;
-using UnityEngine.UI;
 
 namespace PlayerComponents
 {
@@ -14,7 +10,7 @@ namespace PlayerComponents
         public string PlayerName { get; private set; }
         
         
-        [SerializeField] private Joystick _input;
+        private Joystick _input;
 
         [SerializeField] private float _speed;
         [SerializeField] private float _healthPoints;
