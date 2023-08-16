@@ -15,7 +15,7 @@ namespace PlayerComponents
         
         
         [SerializeField] private Joystick _input;
-        
+
         [SerializeField] private float _speed;
         [SerializeField] private float _healthPoints;
         private float _healthPointsLeft; 
@@ -29,9 +29,13 @@ namespace PlayerComponents
         public int MaxCoins { get; private set; }
 
         private PhotonView _photonView;
-        public PhotonView PhotonView => _photonView;
         private Rigidbody2D _rigidbody;
+        private AudioSource _audioSource;
         private ButtonInput _shootButton;
+        
+        public Rigidbody2D Rigidbody => _rigidbody;
+        public PhotonView PhotonView => _photonView;
+        
 
         public event Action OnCoinCollected;
         
@@ -45,6 +49,7 @@ namespace PlayerComponents
             
             _rigidbody = GetComponent<Rigidbody2D>();
             _photonView = GetComponent<PhotonView>();
+            _audioSource = GetComponent<AudioSource>();
 
             _input = FindObjectOfType<Joystick>();
             _shootButton = FindObjectOfType<ButtonInput>();
@@ -130,7 +135,9 @@ namespace PlayerComponents
                 return;
 
             _healthPointsLeft -= damage;
-
+            
+            _audioSource.Play();
+            
             RiseHit();
             CheckIsAlive();
         }
@@ -172,24 +179,19 @@ namespace PlayerComponents
         [PunRPC]
         private void SetColor(int p)
         {
-            var c = GetComponent<SpriteRenderer>();
             switch (p)
             {
                 case 1:
-                    c.color = Color.yellow;
-                    PlayerName = "Yellow";
+                    PlayerName = "Blue Boy";
                     break;
                 case 2:
-                    c.color = Color.cyan;
-                    PlayerName = "Cyan";
+                    PlayerName = "Pink Girl";
                     break;
                 case 3:
-                    c.color = Color.black;
-                    PlayerName = "Black";
+                    PlayerName = "PurpleBoy";
                     break;
                 case 4:
-                    c.color = Color.magenta;
-                    PlayerName = "Mangenta";
+                    PlayerName = "OrangeGirl";
                     break;
             }
         }

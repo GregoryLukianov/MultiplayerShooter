@@ -12,10 +12,12 @@ namespace PlayerComponents
         private float _shootingTimer;
         [SerializeField] protected float _bulletSpeed;
         [SerializeField] protected GameObject _bulletPrefab;
+        [SerializeField] protected Transform _bulletSpawnPoint;
 
         private PhotonView _photonView;
         private Rigidbody2D _rigidbody;
         private ButtonInput _shootButton;
+        private AudioSource _audioSource;
 
         private bool _isInitialized;
 
@@ -24,6 +26,7 @@ namespace PlayerComponents
         {
             _shootingTimer = 0.0f;
             _photonView = GetComponent<PhotonView>();
+            _audioSource = GetComponent<AudioSource>();
         }
 
         public virtual void Initialize(PhotonView photonView,Rigidbody2D rigidbody2D,ButtonInput buttonInput,float damage, float fireRate,float bulletSpeed,GameObject bulletPrefab)
@@ -36,7 +39,7 @@ namespace PlayerComponents
             _fireRate = fireRate;
             _bulletSpeed = bulletSpeed;
             _bulletPrefab = bulletPrefab;
-
+            _bulletSpawnPoint = GetComponentsInChildren<Transform>()[1];
             _isInitialized = true;
         }
 
@@ -55,7 +58,7 @@ namespace PlayerComponents
             {
                 _shootingTimer = _fireRate;
 
-                _photonView.RPC("Fire", RpcTarget.AllViaServer, transform.position, transform.rotation);
+                _photonView.RPC("Fire", RpcTarget.AllViaServer, _bulletSpawnPoint.position, transform.rotation);
             }
 
             if (_shootingTimer > 0.0f)
@@ -73,7 +76,7 @@ namespace PlayerComponents
             
             bullet = Instantiate(_bulletPrefab, position, rotation);
             bullet.GetComponent<SimpleBullet>().InitializeBullet(_photonView.Owner,_damage,_bulletSpeed,  rotation*Vector2.right, Mathf.Abs(lag));
-            
+            _audioSource.Play();
         }
         
         

@@ -20,9 +20,10 @@ namespace GameComponents
         private IEnumerator EndOfGame(string winner, int score)
         {
             float timer = 5.0f;
-
+            GetComponent<AudioSource>().Play();
             while (timer > 0.0f)
             {
+                
                 _infoText.text = string.Format("Player {0} won with {1} points.\n\n\nReturning to login screen in {2} seconds.", winner, score, timer.ToString("n2"));
 
                 yield return new WaitForEndOfFrame();
