@@ -43,7 +43,7 @@ namespace GameComponents
             {
                 foreach (var VARIABLE in _players)
                 {
-                    if (VARIABLE.PhotonView.IsMine)
+                    if (VARIABLE.PhotonView.IsMine & VARIABLE.IsAlive)
                     {
                         StartCoroutine(EndOfGame(VARIABLE.PlayerName, VARIABLE.CoinsCollected));
                     }
