@@ -14,10 +14,17 @@ namespace PlayerComponents
             Destroy(gameObject, 3.0f);
         }
 
-        public void OnCollisionEnter(Collision collision)
+        public void OnCollisionEnter2D(Collision2D collision)
         {
+            var col = collision.gameObject.GetComponent<Damageable>();
+            if (col)
+            {
+                col.GetDamage(_damage);
+                Debug.Log(1);
+            }
             Destroy(gameObject);
         }
+        
 
         public void InitializeBullet(Photon.Realtime.Player owner, float damage, float speed, Vector2 originalDirection, float lag)
         {

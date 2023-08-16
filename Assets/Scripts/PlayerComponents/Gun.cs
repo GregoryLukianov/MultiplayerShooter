@@ -44,10 +44,13 @@ namespace PlayerComponents
         {
             if(!_isInitialized)
                 return;
-            
+
             if (!_photonView.IsMine)
                 return;
-            Debug.Log(1);
+            
+            if (PhotonNetwork.CurrentRoom.PlayerCount<2)
+                return;
+            
             if (_shootButton.IsDown && _shootingTimer <= 0.0)
             {
                 _shootingTimer = _fireRate;
@@ -67,7 +70,7 @@ namespace PlayerComponents
         {
             float lag = (float) (PhotonNetwork.Time - info.SentServerTime);
             GameObject bullet;
-            Debug.Log(2);
+            
             bullet = Instantiate(_bulletPrefab, position, rotation);
             bullet.GetComponent<SimpleBullet>().InitializeBullet(_photonView.Owner,_damage,_bulletSpeed,  rotation*Vector2.right, Mathf.Abs(lag));
             

@@ -1,5 +1,6 @@
 ﻿using System;
 using Photon.Pun;
+using Photon.Pun.UtilityScripts;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -12,8 +13,8 @@ namespace GameComponents
 
         private void Start()
         {
-            var number = Random.Range(0, _characters.Length);
-            PhotonNetwork.Instantiate(_characters[number].name,_startPositions[number].position,Quaternion.identity);
+            var number = PhotonNetwork.CurrentRoom.PlayerCount-1;
+            PhotonNetwork.Instantiate("Player/"+ _characters[number].name,_startPositions[number].position,Quaternion.identity);
         }
     }
 }

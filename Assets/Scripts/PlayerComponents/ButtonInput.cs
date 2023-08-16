@@ -5,16 +5,15 @@ namespace PlayerComponents
 {
     public class ButtonInput : MonoBehaviour, IPointerDownHandler, IPointerUpHandler {
  
-        protected bool _isDown;
-
-        public bool IsDown => _isDown;
+        public bool IsDown { get; private set; }
+        
      
         public void OnPointerDown(PointerEventData eventData) {
-            _isDown = true;
+            IsDown = true;
         }
      
         public void OnPointerUp(PointerEventData eventData) {
-            _isDown = false;
+            IsDown = false;
         }
     }
 }

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using GameComponents;
 using Photon.Pun;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -6,22 +8,32 @@ using UnityEngine.Serialization;
 
 namespace PlayerComponents
 {
-    public class Player: MonoBehaviour
+    public class Player: Damageable
     {
         [SerializeField] private Joystick _input;
+        
         [SerializeField] private float _speed;
+        [SerializeField] private float _healthPoints;
+        private float _healthPointsLeft; 
+        public bool IsAlive { get; private set; }
 
         [SerializeField] private GameObject _gunPrefab;
         private Gun _gun;
         [SerializeField] private GunType _gunType;
+
+        public int CoinsCollected { get; private set; }
         
         private PhotonView _photonView;
         private Rigidbody2D _rigidbody;
         private ButtonInput _shootButton;
-
+        
 
         private void Start()
         {
+            _healthPointsLeft = _healthPoints;
+            IsAlive = true;
+            CoinsCollected = 0;
+            
             _rigidbody = GetComponent<Rigidbody2D>();
             _photonView = GetComponent<PhotonView>();
 
@@ -29,6 +41,8 @@ namespace PlayerComponents
             _shootButton = FindObjectOfType<ButtonInput>();
             
             InitializeGun();
+            
+            AddPlayerToArray();
         }
 
         private void InitializeGun()
@@ -60,6 +74,10 @@ namespace PlayerComponents
             if (!_photonView.IsMine)
                 return;
             
+            if (PhotonNetwork.CurrentRoom.PlayerCount<2)
+                return;
+            
+            
             Rotate(x,y);
             Move(x,y);
         }
@@ -78,5 +96,56 @@ namespace PlayerComponents
             transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
         }
         
+        private void AddPlayerToArray()
+        {
+            var gameManager = FindObjectOfType<GameManager>();
+            if (!gameManager._players.Contains(this))
+            {
+                gameManager._players.Add(this);
+                OnDeath += gameManager.CheckEnd;
+            }
+        }
+        
+        public override float GetHealthPointsLeft()
+        {
+            return _healthPointsLeft / _healthPoints;
+        }
+
+        public override void GetDamage(float damage)
+        {
+            if(damage<0)
+                return;
+            
+            if(!IsAlive)
+                return;
+
+            _healthPointsLeft -= damage;
+
+            RiseHit();
+            CheckIsAlive();
+        }
+
+        private void CheckIsAlive()
+        {
+            if (_healthPointsLeft<=0)
+            {
+                Death();
+                RiseDeath();
+            }
+        }
+
+        private void Death()
+        {
+            IsAlive = false;
+        }
+
+        private void OnTriggerEnter2D(Collider2D col)
+        {
+            if (col.CompareTag("Coin"))
+            {
+                Destroy(col.gameObject);
+                CoinsCollected += 1;
+            }
+        }
     }
 }
