@@ -4,6 +4,7 @@ using Photon.Pun;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using Player = PlayerComponents.Player;
 
 namespace GameComponents
@@ -11,6 +12,7 @@ namespace GameComponents
     public class GameManager: MonoBehaviourPunCallbacks
     {
         [SerializeField] private TextMeshProUGUI _infoText;
+        [SerializeField] private Image _winPannel;
 
         public List<Player> _players;
         
@@ -19,6 +21,7 @@ namespace GameComponents
         {
             float timer = 5.0f;
             GetComponent<AudioSource>().Play();
+            _winPannel.gameObject.SetActive(true);
             while (timer > 0.0f)
             {
                 
