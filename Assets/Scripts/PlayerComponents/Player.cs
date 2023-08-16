@@ -2,6 +2,7 @@
 using Photon.Pun;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 
 namespace PlayerComponents
 {
@@ -9,9 +10,14 @@ namespace PlayerComponents
     {
         [SerializeField] private Joystick _input;
         [SerializeField] private float _speed;
+
+        [SerializeField] private GameObject _gunPrefab;
+        private Gun _gun;
+        [SerializeField] private GunType _gunType;
         
         private PhotonView _photonView;
         private Rigidbody2D _rigidbody;
+        private ButtonInput _shootButton;
 
 
         private void Start()
@@ -20,7 +26,30 @@ namespace PlayerComponents
             _photonView = GetComponent<PhotonView>();
 
             _input = FindObjectOfType<Joystick>();
+            _shootButton = FindObjectOfType<ButtonInput>();
             
+            InitializeGun();
+        }
+
+        private void InitializeGun()
+        {
+            var gunData = ScriptableObject.CreateInstance<GunInfo>();
+            
+            switch (_gunType)
+            {
+                case GunType.PISTOL:
+                    _gun = _gunPrefab.AddComponent<Gun>();
+                    gunData = Resources.Load<GunInfo>("Data/Guns/Pistol");
+                    break;
+                case GunType.SHOTGUN:
+                    
+                    break;
+                case GunType.SNIPER:
+                    
+                    break;
+            }
+            
+            _gun.Initialize(_photonView,_rigidbody,_shootButton,gunData.Damage,gunData.FireRate,gunData.BulletSpeed,gunData.BulletPrefab);
         }
 
         private void Update()
