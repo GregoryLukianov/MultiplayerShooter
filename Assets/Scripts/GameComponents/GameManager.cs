@@ -1,10 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
-using PlayerComponents;
+using Photon.Realtime;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
+using Player = PlayerComponents.Player;
 
 namespace GameComponents
 {
@@ -28,10 +30,12 @@ namespace GameComponents
                 timer -= Time.deltaTime;
             }
 
-            PhotonNetwork.LoadLevel("Lobby");
+            PhotonNetwork.LeaveRoom();
+            SceneManager.LoadScene("Lobby");
         }
         
-        
+
+
 
         public override void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
         {
@@ -39,9 +43,9 @@ namespace GameComponents
             {
                 foreach (var VARIABLE in _players)
                 {
-                    if (VARIABLE.IsAlive)
+                    if (VARIABLE.PhotonView.IsMine)
                     {
-                        StartCoroutine(EndOfGame("pasha", VARIABLE.CoinsCollected));
+                        StartCoroutine(EndOfGame(VARIABLE.PlayerName, VARIABLE.CoinsCollected));
                     }
                 }
             }
@@ -64,7 +68,7 @@ namespace GameComponents
                 {
                     if (VARIABLE.IsAlive)
                     {
-                        StartCoroutine(EndOfGame("pasha", VARIABLE.CoinsCollected));
+                        StartCoroutine(EndOfGame(VARIABLE.PlayerName, VARIABLE.CoinsCollected));
                     }
                 }
             }

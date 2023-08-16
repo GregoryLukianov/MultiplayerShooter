@@ -5,11 +5,15 @@ using Photon.Pun;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 namespace PlayerComponents
 {
     public class Player: Damageable
     {
+        public string PlayerName { get; private set; }
+        
+        
         [SerializeField] private Joystick _input;
         
         [SerializeField] private float _speed;
@@ -22,10 +26,14 @@ namespace PlayerComponents
         [SerializeField] private GunType _gunType;
 
         public int CoinsCollected { get; private set; }
-        
+        public int MaxCoins { get; private set; }
+
         private PhotonView _photonView;
+        public PhotonView PhotonView => _photonView;
         private Rigidbody2D _rigidbody;
         private ButtonInput _shootButton;
+
+        public event Action OnCoinCollected;
         
 
         private void Start()
@@ -33,6 +41,7 @@ namespace PlayerComponents
             _healthPointsLeft = _healthPoints;
             IsAlive = true;
             CoinsCollected = 0;
+            MaxCoins = 20;
             
             _rigidbody = GetComponent<Rigidbody2D>();
             _photonView = GetComponent<PhotonView>();
@@ -43,6 +52,7 @@ namespace PlayerComponents
             InitializeGun();
             
             AddPlayerToArray();
+            SetColor();
         }
 
         private void InitializeGun()
@@ -145,6 +155,42 @@ namespace PlayerComponents
             {
                 Destroy(col.gameObject);
                 CoinsCollected += 1;
+                OnCoinCollected?.Invoke();
+            }
+        }
+        
+        
+        private void SetColor()
+        {
+            if (!_photonView.IsMine)
+                return;
+            
+            var p = PhotonNetwork.CurrentRoom.PlayerCount;
+            _photonView.RPC("SetColor",RpcTarget.AllBuffered,p);
+        }
+        
+        [PunRPC]
+        private void SetColor(int p)
+        {
+            var c = GetComponent<SpriteRenderer>();
+            switch (p)
+            {
+                case 1:
+                    c.color = Color.yellow;
+                    PlayerName = "Yellow";
+                    break;
+                case 2:
+                    c.color = Color.cyan;
+                    PlayerName = "Cyan";
+                    break;
+                case 3:
+                    c.color = Color.black;
+                    PlayerName = "Black";
+                    break;
+                case 4:
+                    c.color = Color.magenta;
+                    PlayerName = "Mangenta";
+                    break;
             }
         }
     }
