@@ -19,6 +19,8 @@ namespace PlayerComponents
 
         private bool _isInitialized;
 
+        public bool CanShoot;
+
 
         protected virtual void Start()
         {
@@ -39,10 +41,14 @@ namespace PlayerComponents
             _bulletPrefab = bulletPrefab;
             _bulletSpawnPoint = GetComponentsInChildren<Transform>()[1];
             _isInitialized = true;
+            CanShoot = true;
         }
 
         private void Update()
         {
+            if(!CanShoot)
+                return;
+            
             if(!_isInitialized)
                 return;
 

@@ -79,6 +79,9 @@ namespace PlayerComponents
 
         private void Update()
         {
+            if(!IsAlive)
+                return;
+            
             var x = _input.Horizontal;
             var y = _input.Vertical;
             
@@ -150,6 +153,7 @@ namespace PlayerComponents
         private void Death()
         {
             IsAlive = false;
+            _gun.CanShoot = false;
         }
 
         private void OnTriggerEnter2D(Collider2D col)
