@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
@@ -10,14 +11,41 @@ namespace GameComponents
     {
         [SerializeField] private float _coinRespawnTime;
 
+        private bool _ready;
+
         private void Start()
         {
+            // if (PhotonNetwork.LocalPlayer.IsMasterClient)
+            // {
+            //     StartCoroutine(SpawnCoins());
+            // }
+        }
+
+        private void Update()
+        {
+            if (!PhotonNetwork.LocalPlayer.IsMasterClient)
+                return;
+            
+            if (_ready)
+                return;
+
+            if (PhotonNetwork.CurrentRoom.PlayerCount >= 2)
+            {
+                _ready = true;
+            }
+            else
+            {
+                return;
+            }
+                
+
             if (PhotonNetwork.LocalPlayer.IsMasterClient)
             {
                 StartCoroutine(SpawnCoins());
+                Debug.Log(1);
             }
         }
-        
+
         public override void OnMasterClientSwitched(Player newMasterClient)
         {
             if (PhotonNetwork.LocalPlayer.ActorNumber == newMasterClient.ActorNumber)
